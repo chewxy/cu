@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cznic/cc"
 	"github.com/gorgonia/bindgen"
+	"modernc.org/cc"
 )
 
 // Functions returns the C function declarations in the givel set of file paths.
@@ -113,6 +113,18 @@ func processEnumName(lcp, name string) string {
 		return "PrecomputedMeans"
 	case "CUDNN_SAMPLER_BILINEAR":
 		return "Bilinear"
+	case "CUDNN_PTR_16B_ALIGNED": // processing would yield `16B_Aligned`, which is not a valid Go name
+		return "Ptr16"
+	case "CUDNN_PTR_NULL":
+		return "NullPtr"
+	case "CUDNN_PTR_ELEM_ALIGNED":
+		return "PtrElemAligned"
+	case "CUDNN_BATCHNORM_OPS_BN":
+		return "BatchNorm" //  name == lcp otherwise
+	case "CUDNN_GENSTATS_SUM_SQSUM":
+		return "SumSq" // it is the only enum in the list, so name == lcp
+	case "CUDNN_NORM_OPS_NORM":
+		return "Norm" // name == lcp otherwise
 	}
 
 	var trimmed string
@@ -123,6 +135,9 @@ func processEnumName(lcp, name string) string {
 	lowered := strings.ToLower(trimmed)
 
 	switch lcp {
+
+	case "CUDNN_TYPE_":
+		lowered = "BackendAttr" + strings.Title(lowered)
 	case "CUDNN_TENSOR_N":
 		// tensor description
 		lowered = "n" + lowered
@@ -134,6 +149,7 @@ func processEnumName(lcp, name string) string {
 	case "CUDNN_CTC_LOSS_ALGO_":
 		// CTC Loss Algorithms
 		lowered = lowered + "CTCLoss"
+	case "CUDNN_PTR_":
 	default:
 	}
 
@@ -231,7 +247,7 @@ func toC(name, typ string) string {
 	}
 
 	if typ == "Memory" {
-		return fmt.Sprintf("%v.Pointer()", name)
+		return fmt.Sprintf("unsafe.Pointer(%v.Uintptr())", name)
 	}
 
 	// log.Printf("name %q typ %q", name, typ)

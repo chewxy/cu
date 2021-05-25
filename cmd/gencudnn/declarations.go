@@ -53,6 +53,17 @@ var ctypes2GoTypes = map[string]string{
 	"cudnnDropoutDescriptor_t":            "Dropout",
 	"cudnnRNNDescriptor_t":                "RNN",
 	"cudnnPersistentRNNPlan_t":            "PersistentRNNPlan",
+
+	// cuda11
+	"cudnnFusedOpsVariantParamPack_t":  "FusedOpVariantParams",
+	"cudnnFusedOpsConstParamPack_t":    "FusedOpConsts",
+	"cudnnSeqDataDescriptor_t":         "SeqData",
+	"cudnnTensorTransformDescriptor_t": "TensorTransform",
+	"cudnnAlgorithmDescriptor_t":       "AlgorithmDescriptor",
+	"cudnnAlgorithmPerformance_t":      "AlgorithmPerformance",
+	"cudnnBackendDescriptor_t":         "Backend",
+	"cudnnRNNDataDescriptor_t":         "RNNData",
+	"cudnnAttnDescriptor_t":            "Attention",
 }
 
 var alphaBetaParams = []string{
@@ -69,6 +80,8 @@ var builtins = map[string]string{
 	"unsigned long long": "uint64",
 
 	"size_t": "uintptr",
+
+	"int64_t": "int64",
 }
 
 var go2cBuiltins = map[string]string{
@@ -80,6 +93,8 @@ var go2cBuiltins = map[string]string{
 	"uint64":  "ulonglong",
 
 	"uintptr": "size_t",
+
+	"int64": "int64_t",
 }
 
 var nonPrimitives = map[string]string{
